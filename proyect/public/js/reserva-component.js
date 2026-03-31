@@ -614,17 +614,41 @@ class ReservaComponent extends HTMLElement {
             const { nombre, servicio, hora, fecha } = this._datosCita;
             const btnPagar = sr.getElementById('btnConfirmarPago');
 
+            // ← NUEVO: verificar que el usuario esté logueado
+            const token = localStorage.getItem('token');
+            if (!token) {
+                msg.className = 'msg-cobro error';
+                msg.textContent = '❌ Debes iniciar sesión para agendar una cita.';
+                return;
+            }
+
             btnPagar.disabled = true;
             btnPagar.textContent = 'Procesando...';
 
             try {
                 const respuesta = await fetch('http://localhost:3000/agendar', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nombre, servicio, hora, fecha, metodoPago })
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': token       // ← envía el token
+                    },
+                    body: JSON.stringify({
+                        name: nombre,                // ← corregido
+                        service: servicio,           // ← corregido
+                        time: hora,                  // ← corregido
+                        date: fecha                  // ← corregido
+                    })
                 });
 
-                await respuesta.json();
+                const data = await respuesta.json();
+
+                if (!data.ok) {
+                    msg.className = 'msg-cobro error';
+                    msg.textContent = `❌ ${data.error || 'Error al agendar la cita.'}`;
+                    btnPagar.disabled = false;
+                    btnPagar.textContent = '💳 Confirmar Pago';
+                    return;
+                }
 
                 msg.className = 'msg-cobro exito';
                 msg.innerHTML = `✅ <strong>¡Pago confirmado!</strong> Tu cita está reservada.`;
@@ -654,4 +678,4 @@ class ReservaComponent extends HTMLElement {
     }
 }
 
-customElements.define('reserva-component', ReservaComponent);
+customElements.define('reserva-component', ReservaComponent);

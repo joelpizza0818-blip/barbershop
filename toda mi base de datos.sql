@@ -24,9 +24,7 @@ CREATE TABLE Citas (
 SELECT * FROM Citas;
 drop table Citas
 
-
-r
-drop table Users
-
+ALTER TABLE users 
+ADD fecha_registro DATETIME DEFAULT GETDATE();
 
 		

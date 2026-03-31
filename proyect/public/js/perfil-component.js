@@ -1,3 +1,5 @@
+
+
 class PerfilComponent extends HTMLElement {
     constructor() {
         super();
@@ -239,9 +241,16 @@ class PerfilComponent extends HTMLElement {
     ══════════════════════════════════════════ */
     _renderPerfil(session) {
         /* Fusiona datos del objeto fijo con los de la sesión */
+        let fechaFormateada = 'Miembro reciente';
+        if (session.miembro_desde) {
+            const fecha = new Date(session.miembro_desde);
+            fechaFormateada = fecha.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+
         const p = Object.assign({}, this._perfil, {
-            nombre: session.nombre || session.name || this._perfil.nombre, // ← agrega session.name
+            nombre: session.nombre || session.name || this._perfil.nombre,
             email: session.email || this._perfil.email,
+            miembro_desde: fechaFormateada,
         });
         const iniciales = p.nombre.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
 
@@ -740,6 +749,7 @@ class PerfilComponent extends HTMLElement {
                     const data = await response.json();
 
                     if (data.ok) {
+                        if (data.token) localStorage.setItem('token', data.token);
                         localStorage.setItem('zhola_user', JSON.stringify(data.user));
                         component.dispatchEvent(new CustomEvent('login-success', {
                             detail: data.user, bubbles: true, composed: true

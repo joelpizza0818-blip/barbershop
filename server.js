@@ -1,85 +1,79 @@
 const express = require("express");
+const { verificarToken, SECRET } = require("./proyect/middleware/verificartoken");
 const app = express();
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const { getConnection, sql } = require("./db");
-const port = 3000;
 
 app.use(cors());
 app.use(express.json());
 
 app.post('/api/registro', async (req, res) => {
     const { name, email, password } = req.body;
-    console.log(req.body);
     try {
         const pool = await getConnection();
-
-        const hash = await bcrypt.hash(password, 10); // ← primero hashear
+        const hash = await bcrypt.hash(password, 10);
 
         await pool.request()
             .input("name", sql.VarChar, name)
             .input("email", sql.VarChar, email)
-            .input("password", sql.VarChar, hash) // ← guardar hash
-            .query("INSERT INTO Users (name, email, password) VALUES (@name, @email, @password)");
+            .input("password", sql.VarChar, hash)
+            .query("INSERT INTO Users (name, email, password, fecha_registro) VALUES (@name, @email, @password, GETDATE())");
 
-        res.json({ ok: true, user: { nombre: name, email: email } });
-
+        res.json({ ok: true, user: { nombre: name, email: email, miembro_desde: new Date().toISOString() } });
     } catch (error) {
-        console.error(error); // ← ver en terminalz
-        res.status(500).json({ ok: false, error: error.message }); // ← mandar error real al frontend
+        res.status(500).json({ ok: false, error: error.message });
     }
 });
+
 app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
     try {
         const pool = await getConnection();
-        if (!pool) throw new Error("No se pudo establecer conexión con la base de datos");
-
         const result = await pool.request()
             .input("email", sql.VarChar, email)
             .query("SELECT * FROM Users WHERE email = @email");
 
-        if (result.recordset.length === 0) {
+        if (result.recordset.length === 0)
             return res.status(401).json({ ok: false, error: "Email no registrado" });
-        }
 
         const user = result.recordset[0];
         const Vpassword = await bcrypt.compare(password, user.password);
 
-        if (!Vpassword) {
+        if (!Vpassword)
             return res.status(401).json({ ok: false, error: "Contraseña incorrecta" });
-        }
 
-        // Ocultar password antes de devolver
-        delete user.password;
-
-        res.json({ ok: true, user: { nombre: user.name, email: user.email } });
-
+        const token = jwt.sign({ id: user.id }, SECRET, { expiresIn: "1d" });
+        res.json({ ok: true, token, user: { nombre: user.name, email: user.email, miembro_desde: user.fecha_registro } });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
+app.post('/agendar', verificarToken, async (req, res) => {
+    const { name, service, date, time } = req.body; // ← nombres correctos
+    const id_usuario = req.usuarioId;               // ← nombre correcto
 
-app.post('/agendar', async (req, res) => {
+    console.log("Datos recibidos:", { id_usuario, name, service, date, time }); // ← para depurar
 
-    const { nombre, servicio, hora, fecha } = req.body;
     try {
         const pool = await getConnection();
-        if (!pool) throw new Error("No se pudo establecer conexión con la base de datos");
 
         await pool.request()
-            .input("nombre", sql.VarChar, nombre)
-            .input("servicio", sql.VarChar, servicio)
-            .input("hora", sql.VarChar, hora)
-            .input("fecha", sql.VarChar, fecha)
-            .query("INSERT INTO Citas (nombre,servicio,hora,fecha) VALUES (@nombre,@servicio,@hora,@fecha)");
-        res.json({ ok: true, mensaje: "Cita agendada con exito" });
+            .input("id_usuario", sql.Int, id_usuario)   // ← coincide con tu tabla
+            .input("name", sql.VarChar, name)
+            .input("service", sql.VarChar, service)
+            .input("date", sql.Date, date)
+            .input("time", sql.Time, time)
+            .query(`INSERT INTO Citas (id_usuario, name, service, date, time) 
+                    VALUES (@id_usuario, @name, @service, @date, @time)`);
 
+        res.json({ ok: true, mensaje: "Cita agendada con éxito" });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error("Error:", error.message); // ← ver error en terminal
+        res.status(500).json({ ok: false, error: error.message });
     }
-})
-
+});
 
 app.listen(3000, () => console.log("🚀 Servidor corriendo en http://localhost:3000"));
