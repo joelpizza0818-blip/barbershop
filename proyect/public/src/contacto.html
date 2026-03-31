@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contacto | Classic Barbershop</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/contacto.css">
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="logo"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="icon icon-tabler icons-tabler-outline icon-tabler-scissors">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M3 7a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                <path d="M3 17a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                <path d="M8.6 8.6l10.4 10.4" />
+                <path d="M8.6 15.4l10.4 -10.4" />
+            </svg>Classic Barbers</div>
+        <nav>
+            <a href="index.html">Inicio</a>
+            <a href="services.html">Servicios</a>
+            <a href="nosotros.html">Nosotros</a>
+        </nav>
+        <a href="#" class="btn btn-primary" style="padding: 8px 20px; font-size:1.2rem;" onclick="abrirModal(event)">Mi
+            Perfil</a>
+    </header>
+
+    <main>
+        <section class="hero-page">
+            <span>Hablemos de tu estilo</span>
+            <h1>Pásate por el Estudio</h1>
+            <p>
+                ¿Quieres un cambio de look o un afeitado clásico? Estamos listos para atenderte como te mereces.
+            </p>
+        </section>
+
+        <section class="container-box">
+            <div class="caja-contacto">
+                <h3>Escríbenos</h3>
+                <form>
+                    <div class="campo">
+                        <label>Tu nombre completo</label>
+                        <input type="text" placeholder="Ej. Pedro Picapiedra">
+                    </div>
+                    <div class="campo">
+                        <label>Correo electrónico</label>
+                        <input type="email" placeholder="nombre@correo.com">
+                    </div>
+                    <div class="campo">
+                        <label>¿Cómo podemos ayudarte?</label>
+                        <textarea rows="4" placeholder="Cuéntanos qué servicio buscas..."></textarea>
+                    </div>
+                    <button type="button" class="boton-enviar">Enviar Mensaje</button>
+                </form>
+            </div>
+
+            <div>
+                <h3 class="info-titulo">Ubicación y Datos</h3>
+
+                <div class="dato-contacto">
+                    <h4>Nuestra Sede</h4>
+                    <p>Calle Falsa 123, Distrito Central<br>Ciudad de México, CP 06000</p>
+                </div>
+
+                <div class="dato-contacto">
+                    <h4>Llámanos</h4>
+                    <p>+52 55 1234 5678</p>
+                </div>
+
+                <div class="tabla-horarios">
+                    <h4>Horarios de Atención</h4>
+
+                    <div class="fila-horario">
+                        <span>Lunes a Viernes</span>
+                        <strong>09:00 - 20:00</strong>
+                    </div>
+
+                    <div class="fila-horario">
+                        <span>Sábados</span>
+                        <strong>10:00 - 18:00</strong>
+                    </div>
+
+                    <div class="fila-horario">
+                        <span>Domingos</span>
+                        <strong>Cerrado</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer
+        style="text-align: center; padding: 40px; border-top: 1px solid rgba(255,255,255,0.05); color: #555; font-size: 0.7rem; letter-spacing: 2px;">
+        © 2024 CLASSIC BARBERSHOP • EL ARTE DE LA BARBERÍA CLÁSICA
+    </footer>
+    <perfil-component id="modalPerfil"></perfil-component>
+
+    <!-- Importar el Web Component -->
+    <script defer src="../js/perfil-component.js"></script>
+
+    <!-- Función global para abrir el modal desde cualquier botón -->
+    <script>
+        function abrirModal(e) {
+            e.preventDefault();
+            document.getElementById('modalPerfil').open();
+        }
+    </script>
+
+    <!-- Escuchar eventos del perfil -->
+    <script>
+        document.getElementById('modalPerfil').addEventListener('cerrar-sesion', () => {
+            console.log('Sesión cerrada');
+        });
+        document.getElementById('modalPerfil').addEventListener('editar-perfil', () => {
+            console.log('Editar perfil');
+        });
+    </script>
+
+</body>
+
+</html>

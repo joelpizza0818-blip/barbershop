@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servicios | Classic Barbershop</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Manrope:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/services.css">
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="logo"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="icon icon-tabler icons-tabler-outline icon-tabler-scissors">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M3 7a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                <path d="M3 17a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                <path d="M8.6 8.6l10.4 10.4" />
+                <path d="M8.6 15.4l10.4 -10.4" />
+            </svg>Classic Barbers</div>
+        <nav>
+            <a href="index.html">Inicio</a>
+            <a href="nosotros.html">Nosotros</a>
+            <a href="contacto.html">Contacto</a>
+        </nav>
+        <a href="#" class="btn btn-primary" style="padding: 8px 20px; font-size:1.2rem;" onclick="abrirModal(event)">Mi
+            Perfil</a>
+    </header>
+
+    <section class="hero-services">
+        <span>NUESTRA EXPERIENCIA</span>
+        <h1>Servicios de <span>Barbero</span></h1>
+        <p style="color: var(--text-gray)">Tradición y modernidad para el caballero distinguido.</p>
+    </section>
+
+    <div class="menu-grid">
+        <div class="service-item">
+            <div class="service-header">
+                <h3>Corte Signature</h3>
+                <span class="price">$45</span>
+            </div>
+            <div class="service-content-wrapper">
+                <img class="img-court"
+                    src="https://alphamenbarberias.com/api/image/eyJpdiI6Im9oTnUveG9TU2tNd1RuejZvQmhMRFE9PSIsInZhbHVlIjoiNjBFclJ4VGhlN0ZEZllmWUdTRlA0UGw2aWRONFpsU3VpU2dZZVRRR2NMeS9zZzBmRG1aMXhWZnJLZmJxNVVBb0ZaMjlwWVVWaG5BTXYwQ3BpczVsRXc9PSIsIm1hYyI6ImRmNTk0OTRlM2U2M2FlOTE2NTI4NThjZjEzMDIxY2RmZWFkMGY5ZTZhMmU2MWIyMmY3MjgxMTFkMjk4MjlkNWYiLCJ0YWciOiIifQ%253D%253D"
+                    alt="cortes">
+                <p> Asesoría personalizada, lavado relajante y peinado con productos premium.</p>
+            </div>
+            <a href="#" class="book-link" onclick="abrirModal(event)">Agendar</a>
+        </div>
+
+        <div class="service-item">
+            <div class="service-header">
+                <h3>Afeitado Clásico</h3>
+                <span class="price">$40</span>
+            </div>
+            <div class="service-content-wrapper">
+                <img style="width: 50%;" class="img-court"
+                    src="https://www.labarberiashop.com/blog/wp-content/uploads/2025/05/Hombre-usando-brocha-de-afeitar-en-ritual-de-afeitado-clasico.webp"
+                    alt="cortes">
+                <p>Ritual de toalla caliente, navaja libre y bálsamo refrescante.</p>
+            </div>
+            <a href="#" class="book-link" onclick="abrirModal(event)">Agendar</a>
+        </div>
+
+        <div class="service-item">
+            <div class="service-header">
+                <h3>Esculpido de Barba</h3>
+                <span class="price">$35</span>
+            </div>
+            <div class="service-content-wrapper">
+                <img class="img-court"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTl8qAkPzr9Mj-mZWuLMC82VMc0NeWsHRb5lA&s"
+                    alt="cortes">
+                <p>Diseño de barba y perfilado con navaja, incluye aceite nutritivo.</p>
+            </div>
+            <a href="#" class="book-link" onclick="abrirModal(event)">Agendar</a>
+        </div>
+
+        <div class="service-item">
+            <div class="service-header">
+                <h3>Tratamiento Capilar</h3>
+                <span class="price">$30</span>
+            </div>
+            <div class="service-content-wrapper">
+                <img style="width: 50%;" class="img-court"
+                    src="https://inesbe.com/wp-content/smush-webp/2025/01/Errores-comunes-en-el-lavado-capilar-1024x684.jpg.webp"
+                    alt="cortes">
+                <p>Exfoliación y masaje de tejido profundo para la salud del folículo.</p>
+            </div>
+            <a href="#" class="book-link" onclick="abrirModal(event)">Agendar</a>
+        </div>
+    </div>
+
+    <section class="packages">
+        <h2 style="font-size: 2.5rem; margin-bottom: 10px;">Paquetes Especiales</h2>
+        <div class="package-grid">
+            <div class="package-card">
+                <h3>The Full Experience</h3>
+                <span class="price" style="font-size: 2rem;">$105</span>
+                <ul>
+                    <li>Corte Signature + Afeitado + Tratamiento</li>
+                    <li>Sesión de 90 minutos</li>
+                    <li>Café o Whiskey de cortesía</li>
+                </ul>
+                <nav>
+                    <a href="#" class="btn-full" onclick="abrirModal(event)">Elegir Paquete</a>
+                </nav>
+            </div>
+
+            <div class="package-card">
+                <h3>The Executive</h3>
+                <span class="price" style="font-size: 2rem;">$75</span>
+                <ul>
+                    <li>Corte Signature + Barba</li>
+                    <li>Sesión de 60 minutos</li>
+                    <li>Acabado con toalla caliente</li>
+                </ul>
+                <nav>
+                    <a href="#" class="btn-full" onclick="abrirModal(event)">Elegir Paquete</a>
+                </nav>
+            </div>
+        </div>
+    </section>
+
+    <footer
+        style="padding: 40px; text-align: center; color: var(--text-muted); font-size: 0.8rem; letter-spacing: 2px;">
+        © 2024 CLASSIC BARBERSHOP. TODOS LOS DERECHOS RESERVADOS.
+    </footer>
+
+    <!-- Web Component: Reservar Cita -->
+    <reserva-component id="modalPerfil"></reserva-component>
+
+    <!-- Importar el Web Component -->
+    <script type="module" src="../js/reserva-component.js"></script>
+
+    <!-- Función global para abrir el modal desde cualquier botón -->
+    <script>
+        function abrirModal(e) {
+            e.preventDefault();
+            document.getElementById('modalPerfil').open();
+        }   
+    </script>
+
+    <!-- Escuchar eventos del perfil -->
+    <script>
+        document.getElementById('modalPerfil').addEventListener('cerrar-sesion', () => {
+            console.log('Sesión cerrada');
+        });
+        document.getElementById('modalPerfil').addEventListener('editar-perfil', () => {
+            console.log('Editar perfil');
+        });
+    </script>
+
+
+    <perfil-component id="modalPerfil"></perfil-component>
+
+    <!-- Importar el Web Component -->
+    <script defer src="../js/perfil-component.js"></script>
+
+    <!-- Función global para abrir el modal desde cualquier botón -->
+    <script>
+        function abrirModal(e) {
+            e.preventDefault();
+            document.getElementById('modalPerfil').open();
+        }
+    </script>
+
+    <!-- Escuchar eventos del perfil -->
+    <script>
+        document.getElementById('modalPerfil').addEventListener('cerrar-sesion', () => {
+            console.log('Sesión cerrada');
+        });
+        document.getElementById('modalPerfil').addEventListener('editar-perfil', () => {
+            console.log('Editar perfil');
+        });
+    </script>
+</body>
+
+</html>

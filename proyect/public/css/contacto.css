@@ -1,0 +1,166 @@
+/* --- PÁGINA DE CONTACTO --- */
+
+/* --- SECCIÓN HERO --- */
+.hero-page {
+    padding: 150px 20px 60px;
+    text-align: center;
+}
+
+.hero-page span {
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+.hero-page h1 {
+    font-size: 3rem;
+    margin: 10px 0;
+}
+
+.hero-page p {
+    color: var(--text-gray);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* --- CUERPO PRINCIPAL --- */
+.container-box {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    padding: 40px 20px 100px;
+}
+
+/* --- FORMULARIO --- */
+.caja-contacto {
+    background: var(--charcoal);
+    padding: 40px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.caja-contacto h3 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    color: var(--light);
+}
+
+.campo {
+    margin-bottom: 20px;
+}
+
+.campo label {
+    display: block;
+    color: var(--gold);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.campo input,
+.campo textarea {
+    width: 100%;
+    background: var(--dark);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px;
+    border-radius: 8px;
+    color: white;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.boton-enviar {
+    width: 100%;
+    background: var(--gold);
+    color: var(--dark);
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.boton-enviar:hover {
+    background: white;
+}
+
+/* --- INFORMACIÓN --- */
+.info-titulo {
+    font-size: 2rem;
+    margin-bottom: 30px;
+    color: var(--light);
+}
+
+.dato-contacto {
+    margin-bottom: 30px;
+}
+
+.dato-contacto h4 {
+    margin: 0;
+    color: var(--gold);
+    font-size: 1.1rem;
+}
+
+.dato-contacto p {
+    margin: 5px 0;
+    color: var(--text-gray);
+}
+
+/* --- HORARIOS --- */
+.tabla-horarios {
+    background: rgba(212, 175, 55, 0.05);
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.tabla-horarios h4 {
+    margin: 0 0 15px 0;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--light);
+}
+
+.fila-horario {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.9rem;
+}
+
+.fila-horario span {
+    color: var(--text-gray);
+}
+
+.fila-horario strong {
+    color: var(--light);
+}
+
+.fila-horario:last-child {
+    border-bottom: none;
+    color: var(--gold);
+}
+
+.fila-horario:last-child strong {
+    color: var(--gold);
+}
+
+/* --- RESPONSIVE (MÓVILES) --- */
+@media (max-width: 800px) {
+    .container-box {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-page h1 {
+        font-size: 2.2rem;
+    }
+}
