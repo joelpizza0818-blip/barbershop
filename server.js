@@ -76,4 +76,35 @@ app.post('/agendar', verificarToken, async (req, res) => {
     }
 });
 
+
+app.get('/api/miscitas', verificarToken, async (req, res) => {
+    const id_usuario = req.usuarioId;
+    try {
+        const pool = await getConnection();
+
+        const result = await pool.request()
+            .input("id_usuario", sql.Int, id_usuario)
+            .query(`
+                SELECT 
+                    COUNT(*) AS total,
+                    (SELECT TOP 1 service + ' — ' + CONVERT(VARCHAR, date, 103) 
+                     FROM Citas 
+                     WHERE id_usuario = @id_usuario 
+                     AND date >= CAST(GETDATE() AS DATE)
+                     ORDER BY date ASC) AS proxima
+                FROM Citas 
+                WHERE id_usuario = @id_usuario
+            `);
+
+        const datos = result.recordset[0];
+        res.json({
+            ok: true,
+            total: datos.total,
+            proxima: datos.proxima || 'Sin citas próximas'
+        });
+
+    } catch (error) {
+        res.status(500).json({ ok: false, error: error.message });
+    }
+});
 app.listen(3000, () => console.log("🚀 Servidor corriendo en http://localhost:3000"));

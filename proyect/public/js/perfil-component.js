@@ -28,10 +28,10 @@ class PerfilComponent extends HTMLElement {
         this._render();
     }
 
-    _render() {
+    async _render() {
         const session = this._getSession();
         if (session) {
-            this._renderPerfil(session);
+            await this._renderPerfil(session);
         } else {
             this._renderNoSession();
         }
@@ -115,23 +115,59 @@ class PerfilComponent extends HTMLElement {
                     font-size:0.87rem; color:#64748b; margin:0;
                 }
 
-                /* tabs */
-                .tabs {
-                    display:grid; grid-template-columns:1fr 1fr;
-                    border-bottom:1px solid rgba(255,255,255,0.07);
+                /* ── Switcher ── */
+                .switcher {
+                    display:flex;
+                    position:relative;
+                    background:rgba(255,255,255,0.05);
+                    border-radius:12px;
+                    padding:4px;
+                    margin:20px 28px 0;
+                }
+                .switcher-indicator {
+                    position:absolute;
+                    top:4px; left:4px;
+                    width:calc(50% - 4px);
+                    height:calc(100% - 8px);
+                    background:linear-gradient(135deg,#D4AF37,#b8922e);
+                    border-radius:9px;
+                    transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);
+                    z-index:0;
+                }
+                .switcher-indicator.right {
+                    transform:translateX(100%);
                 }
                 .tab-btn {
-                    padding:14px; border:none; background:transparent;
+                    flex:1;
+                    padding:11px 0; border:none; background:transparent;
                     font-family:'Manrope',sans-serif; font-size:0.88rem;
                     font-weight:700; color:#64748b; cursor:pointer;
-                    transition:color 0.2s,border-color 0.2s;
-                    border-bottom:2px solid transparent;
+                    transition:color 0.3s ease;
                     letter-spacing:0.03em;
+                    position:relative; z-index:1;
+                    border-radius:9px;
+                    text-align:center;
                 }
-                .tab-btn.active{color:#D4AF37;border-bottom-color:#D4AF37;}
+                .tab-btn.active{color:#111621;}
 
                 /* form body */
-                .ns-body { padding:28px; }
+                .ns-body {
+                    overflow:hidden;
+                }
+                .panels-track {
+                    display:grid;
+                    grid-template-columns:1fr 1fr;
+                    width:200%;
+                    transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);
+                }
+                .panels-track.show-registro {
+                    transform:translateX(-50%);
+                }
+                .panel {
+                    padding:28px;
+                    box-sizing:border-box;
+                }
+
                 .form-group { margin-bottom:16px; }
                 .form-label {
                     display:block;
@@ -167,17 +203,14 @@ class PerfilComponent extends HTMLElement {
                 .ns-footer a{color:var(--gold);cursor:pointer;text-decoration:none;}
                 .ns-footer a:hover{text-decoration:underline;}
 
-                /* panel de registro oculto por defecto */
-                #panelRegistro{display:none;}
-
                 .mensaje {
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 5px;
-            display: none;
-            text-align: center;
-            font-size: 14px;
-        }
+                    margin-top: 15px;
+                    padding: 10px;
+                    border-radius: 5px;
+                    display: none;
+                    text-align: center;
+                    font-size: 14px;
+                }
             </style>
 
             <div class="modal-box" part="box">
@@ -189,48 +222,51 @@ class PerfilComponent extends HTMLElement {
                     <p class="ns-sub">Inicia sesión para ver tu perfil y citas</p>
                 </div>
 
-                <!-- Tabs -->
-                <div class="tabs">
+                <!-- Switcher -->
+                <div class="switcher">
+                    <div class="switcher-indicator" id="switcherIndicator"></div>
                     <button class="tab-btn active" id="tabLogin">Iniciar Sesión</button>
                     <button class="tab-btn" id="tabRegistro">Registrarse</button>
                 </div>
 
                 <div class="ns-body">
+                    <div class="panels-track" id="panelsTrack">
 
-                    <!-- Panel Login -->
-                    <div id="panelLogin">
-                        <div class="form-group">
-                            <label class="form-label">Correo electrónico</label>
-                            <input class="form-input" type="email" id="loginEmail" placeholder="tu@correo.com">
+                        <!-- Panel Login -->
+                        <div class="panel" id="panelLogin">
+                            <div class="form-group">
+                                <label class="form-label">Correo electrónico</label>
+                                <input class="form-input" type="email" id="loginEmail" placeholder="tu@correo.com">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Contraseña</label>
+                                <input class="form-input" type="password" id="loginPass" placeholder="••••••••">
+                            </div>
+                            <button class="btn-gold" id="btnLogin">Iniciar Sesión</button>
+                            <div id="msg-log" class="mensaje"></div>
+                            <p class="ns-footer">¿No tienes cuenta? <a id="irRegistro">Regístrate gratis</a></p>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">Contraseña</label>
-                            <input class="form-input" type="password" id="loginPass" placeholder="••••••••">
+
+                        <!-- Panel Registro -->
+                        <div class="panel" id="panelRegistro">
+                            <div class="form-group">
+                                <label class="form-label">Nombre completo</label>
+                                <input class="form-input" type="text" id="regNombre" placeholder="Carlos Mendoza">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Correo electrónico</label>
+                                <input class="form-input" type="email" id="regEmail" placeholder="tu@correo.com">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Contraseña</label>
+                                <input class="form-input" type="password" id="regPass" placeholder="••••••••">
+                            </div>
+                            <button class="btn-gold" id="btnRegistro">Registrarse</button>
+                            <div id="msg-reg" class="mensaje"></div>
+                            <p class="ns-footer">¿Ya tienes cuenta? <a id="irLogin">Inicia sesión</a></p>
                         </div>
-                        <button class="btn-gold" id="btnLogin">Iniciar Sesión</button>
-                        <div id="msg-log" class="mensaje"></div>
-                        <p class="ns-footer">¿No tienes cuenta? <a id="irRegistro">Regístrate gratis</a></p>
+
                     </div>
-
-                    <!-- Panel Registro -->
-                    <div id="panelRegistro">
-                        <div class="form-group">
-                            <label class="form-label">Nombre completo</label>
-                            <input class="form-input" type="text" id="regNombre" placeholder="Carlos Mendoza">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Correo electrónico</label>
-                            <input class="form-input" type="email" id="regEmail" placeholder="tu@correo.com">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Contraseña</label>
-                            <input class="form-input" type="password" id="regPass" placeholder="••••••••">
-                        </div>
-                        <button class="btn-gold" id="btnRegistro">Registrarse</button>
-                        <div id="msg-reg" class="mensaje"></div>
-                        <p class="ns-footer">¿Ya tienes cuenta? <a id="irLogin">Inicia sesión</a></p>
-                    </div>
-
                 </div>
             </div>
         `;
@@ -239,18 +275,41 @@ class PerfilComponent extends HTMLElement {
     /* ══════════════════════════════════════════
        VISTA: CON SESIÓN  (perfil completo)
     ══════════════════════════════════════════ */
-    _renderPerfil(session) {
-        /* Fusiona datos del objeto fijo con los de la sesión */
+    async _renderPerfil(session) {
+        // ← NUEVO: traer citas del servidor
+        let citas_totales = 0;
+        let proxima_cita = 'Sin citas próximas';
+
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                const res = await fetch('http://localhost:3000/api/miscitas', {
+                    headers: { 'Authorization': token }
+                });
+                const data = await res.json();
+                if (data.ok) {
+                    citas_totales = data.total;
+                    proxima_cita = data.proxima;
+                }
+            } catch (e) {
+                console.error('Error al cargar citas:', e);
+            }
+        }
+
+        // Formatear fecha de registro
         let fechaFormateada = 'Miembro reciente';
         if (session.miembro_desde) {
             const fecha = new Date(session.miembro_desde);
             fechaFormateada = fecha.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
         }
 
+        // ← actualiza el perfil con los datos reales
         const p = Object.assign({}, this._perfil, {
             nombre: session.nombre || session.name || this._perfil.nombre,
             email: session.email || this._perfil.email,
             miembro_desde: fechaFormateada,
+            citas_totales,      // ← ahora viene del servidor
+            proxima_cita        // ← ahora viene del servidor
         });
         const iniciales = p.nombre.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
 
@@ -704,15 +763,18 @@ class PerfilComponent extends HTMLElement {
             const panelLogin = sr.getElementById('panelLogin');
             const panelReg = sr.getElementById('panelRegistro');
 
+            const track = sr.getElementById('panelsTrack');
+            const indicator = sr.getElementById('switcherIndicator');
+
             const showLogin = () => {
-                panelLogin.style.display = 'block';
-                panelReg.style.display = 'none';
+                track.classList.remove('show-registro');
+                indicator.classList.remove('right');
                 tabLogin.classList.add('active');
                 tabRegistro.classList.remove('active');
             };
             const showRegistro = () => {
-                panelLogin.style.display = 'none';
-                panelReg.style.display = 'block';
+                track.classList.add('show-registro');
+                indicator.classList.add('right');
                 tabRegistro.classList.add('active');
                 tabLogin.classList.remove('active');
             };
@@ -792,6 +854,7 @@ class PerfilComponent extends HTMLElement {
                     ]
                 });
             });
+
         } else {
             sr.getElementById('btnEditarPerfil').addEventListener('click', () => {
                 this.dispatchEvent(new CustomEvent('editar-perfil', { bubbles: true, composed: true }));

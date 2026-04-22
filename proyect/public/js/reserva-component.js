@@ -611,7 +611,7 @@ class ReservaComponent extends HTMLElement {
             const sr = this.shadowRoot;
             const msg = sr.getElementById('msgCobro');
             const metodoPago = sr.querySelector('input[name="metodoPago"]:checked')?.value ?? 'efectivo';
-            const { nombre, servicio, hora, fecha } = this._datosCita;
+            const { nombre, servicio, servicioVal, hora, fecha } = this._datosCita;
             const btnPagar = sr.getElementById('btnConfirmarPago');
 
             // ← NUEVO: verificar que el usuario esté logueado
@@ -633,10 +633,10 @@ class ReservaComponent extends HTMLElement {
                         'Authorization': token       // ← envía el token
                     },
                     body: JSON.stringify({
-                        name: nombre,                // ← corregido
-                        service: servicio,           // ← corregido
-                        time: hora,                  // ← corregido
-                        date: fecha                  // ← corregido
+                        name: nombre,
+                        service: servicioVal,        // ← valor limpio sin emojis (ej: "corte", "barba")
+                        time: hora,
+                        date: fecha
                     })
                 });
 
