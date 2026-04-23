@@ -4,44 +4,55 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Contacta a Classic Barbershop para agendar tu próxima cita o hacernos cualquier consulta.">
     <title>Contacto | Classic Barbershop</title>
 
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/global.css">
     <link rel="stylesheet" href="../css/contacto.css">
 </head>
 
 <body>
 
+    <!-- Grain texture overlay -->
+    <div class="bg-grain" aria-hidden="true"></div>
+
+    <!-- Nav overlay for mobile -->
+    <div class="nav-overlay" aria-hidden="true"></div>
+
     <header class="header">
-        <div class="logo"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                class="icon icon-tabler icons-tabler-outline icon-tabler-scissors">
+        <a href="index.html" class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                 <path d="M3 7a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
                 <path d="M3 17a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
                 <path d="M8.6 8.6l10.4 10.4" />
                 <path d="M8.6 15.4l10.4 -10.4" />
-            </svg>Classic Barbers</div>
+            </svg>
+            Classic Barbers
+        </a>
         <nav>
             <a href="index.html">Inicio</a>
             <a href="services.html">Servicios</a>
             <a href="nosotros.html">Nosotros</a>
         </nav>
-        <a href="#" class="btn btn-primary" style="padding: 8px 20px; font-size:1.2rem;" onclick="abrirModal(event)">Mi
-            Perfil</a>
+        <button class="hamburger" aria-label="Abrir menú">
+            <span></span><span></span><span></span>
+        </button>
+        <a href="#" class="btn-primary btn-header" onclick="abrirModal(event)">Mi Perfil</a>
     </header>
 
     <main>
         <section class="hero-page">
-            <span>Hablemos de tu estilo</span>
-            <h1>Pásate por el Estudio</h1>
-            <p>
+            <p class="section-label" data-reveal>Hablemos de tu estilo</p>
+            <h1 class="section-title" data-reveal>Pásate por el <span>Estudio</span></h1>
+            <p class="section-subtitle" data-reveal>
                 ¿Quieres un cambio de look o un afeitado clásico? Estamos listos para atenderte como te mereces.
             </p>
         </section>
 
         <section class="container-box">
-            <div class="caja-contacto">
+            <div class="caja-contacto glass-card" data-reveal="left">
                 <h3>Escríbenos</h3>
                 <form>
                     <div class="campo">
@@ -56,12 +67,12 @@
                         <label>¿Cómo podemos ayudarte?</label>
                         <textarea rows="4" placeholder="Cuéntanos qué servicio buscas..."></textarea>
                     </div>
-                    <button type="button" class="boton-enviar">Enviar Mensaje</button>
+                    <button type="button" class="btn-primary" style="width: 100%;">Enviar Mensaje</button>
                 </form>
             </div>
 
-            <div>
-                <h3 class="info-titulo">Ubicación y Datos</h3>
+            <div class="info-contacto" data-reveal="right">
+                <h3 class="info-titulo">Ubicación y <span>Datos</span></h3>
 
                 <div class="dato-contacto">
                     <h4>Nuestra Sede</h4>
@@ -73,7 +84,7 @@
                     <p>+52 55 1234 5678</p>
                 </div>
 
-                <div class="tabla-horarios">
+                <div class="tabla-horarios glass-card">
                     <h4>Horarios de Atención</h4>
 
                     <div class="fila-horario">
@@ -95,25 +106,68 @@
         </section>
     </main>
 
-    <footer
-        style="text-align: center; padding: 40px; border-top: 1px solid rgba(255,255,255,0.05); color: #555; font-size: 0.7rem; letter-spacing: 2px;">
-        © 2024 CLASSIC BARBERSHOP • EL ARTE DE LA BARBERÍA CLÁSICA
+    <!-- ====== FOOTER ====== -->
+    <footer>
+        <div class="footer-grid" data-reveal-stagger>
+            <div class="footer-col">
+                <h4>Classic Barbers</h4>
+                <p>Dedicados al oficio del grooming. Calidad, estilo y comunidad en el corazón de la ciudad.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Visítanos</h4>
+                <p>123 Calle Herencia,<br>Madrid, España</p>
+                <p>+34 900 123 456</p>
+            </div>
+            <div class="footer-col">
+                <h4>Horarios</h4>
+                <ul>
+                    <li>Lun - Vie: 9am - 8pm</li>
+                    <li>Sábados: 10am - 6pm</li>
+                    <li>Domingos: Cerrado</li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Síguenos</h4>
+                <div class="social-links">
+                    <a href="https://www.instagram.com/" target="_blank" aria-label="Instagram">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M4 8a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4l0 -8" />
+                            <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+                            <path d="M16.5 7.5v.01" />
+                        </svg>
+                    </a>
+                    <a href="https://facebook.com" target="_blank" aria-label="Facebook">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M7 10v4h3v7h4v-7h3l1 -4h-4v-2a1 1 0 0 1 1 -1h3v-4h-3a5 5 0 0 0 -5 5v2h-3" />
+                        </svg>
+                    </a>
+                    <a href="https://twitter.com" target="_blank" aria-label="Twitter">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M14.058 3.41c-1.807 .767 -2.995 2.453 -3.056 4.38l-.002 .182l-.243 -.023c-2.392 -.269 -4.498 -1.512 -5.944 -3.531a1 1 0 0 0 -1.685 .092l-.097 .186l-.049 .099c-.719 1.485 -1.19 3.29 -1.017 5.203l.03 .273c.283 2.263 1.5 4.215 3.779 5.679l.173 .107l-.081 .043c-1.315 .663 -2.518 .952 -3.827 .9c-1.056 -.04 -1.446 1.372 -.518 1.878c3.598 1.961 7.461 2.566 10.792 1.6c4.06 -1.18 7.152 -4.223 8.335 -8.433l.127 -.495c.238 -.993 .372 -2.006 .401 -3.024l.003 -.332l.393 -.779l.44 -.862l.214 -.434l.118 -.247c.265 -.565 .456 -1.033 .574 -1.43l.014 -.056l.008 -.018c.22 -.593 -.166 -1.358 -.941 -1.358l-.122 .007a.997 .997 0 0 0 -.231 .057l-.086 .038a7.46 7.46 0 0 1 -.88 .36l-.356 .115l-.271 .08l-.772 .214c-1.336 -1.118 -3.144 -1.254 -5.012 -.554l-.211 .084z" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <p class="footer-bottom">&copy; 2026 Classic Barbershop. Todos los derechos reservados.</p>
     </footer>
+
+    <!-- Web Components -->
     <perfil-component id="modalPerfil"></perfil-component>
 
-    <!-- Importar el Web Component -->
+    <!-- Scripts -->
     <script defer src="../js/perfil-component.js"></script>
+    <script defer src="../js/animations.js"></script> <!-- AÑADIDO ANIMATIONS.JS -->
 
-    <!-- Función global para abrir el modal desde cualquier botón -->
     <script>
         function abrirModal(e) {
             e.preventDefault();
             document.getElementById('modalPerfil').open();
         }
-    </script>
-
-    <!-- Escuchar eventos del perfil -->
-    <script>
+        
         document.getElementById('modalPerfil').addEventListener('cerrar-sesion', () => {
             console.log('Sesión cerrada');
         });
@@ -121,7 +175,6 @@
             console.log('Editar perfil');
         });
     </script>
-
 </body>
 
 </html>

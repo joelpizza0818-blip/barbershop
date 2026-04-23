@@ -1,140 +1,139 @@
-/* --- PÁGINA DE CONTACTO --- */
+/* ============================================
+   CONTACTO.CSS — Contact Page Specific Styles
+   Base styles are in global.css
+   ============================================ */
 
-/* --- SECCIÓN HERO --- */
+/* --- HERO PAGE --- */
 .hero-page {
-    padding: 150px 20px 60px;
+    padding: 160px 5% 60px;
     text-align: center;
+    position: relative;
+    background: radial-gradient(ellipse at center top, rgba(212, 175, 55, 0.05) 0%, transparent 60%);
 }
 
-.hero-page span {
-    color: var(--gold);
-    text-transform: uppercase;
-    letter-spacing: 4px;
-    font-size: 0.7rem;
-    font-weight: bold;
-}
-
-.hero-page h1 {
-    font-size: 3rem;
-    margin: 10px 0;
-}
-
-.hero-page p {
-    color: var(--text-gray);
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-/* --- CUERPO PRINCIPAL --- */
+/* --- MAIN CONTAINER --- */
 .container-box {
-    max-width: 1100px;
+    max-width: var(--container-width);
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 50px;
-    padding: 40px 20px 100px;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 60px;
+    padding: 0 5% var(--section-padding);
 }
 
 /* --- FORMULARIO --- */
 .caja-contacto {
-    background: var(--charcoal);
     padding: 40px;
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .caja-contacto h3 {
     margin-top: 0;
-    font-size: 1.5rem;
+    margin-bottom: 30px;
+    font-size: 1.8rem;
     color: var(--light);
 }
 
 .campo {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 .campo label {
     display: block;
     color: var(--gold);
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
-    font-weight: bold;
-    margin-bottom: 5px;
+    letter-spacing: 1px;
+    font-weight: 700;
+    margin-bottom: 8px;
 }
 
 .campo input,
 .campo textarea {
     width: 100%;
-    background: var(--dark);
+    background: rgba(11, 15, 24, 0.6);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 12px;
-    border-radius: 8px;
-    color: white;
-    box-sizing: border-box;
-    font-family: inherit;
+    padding: 14px 16px;
+    border-radius: var(--radius-sm);
+    color: var(--light);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    transition: border-color var(--transition-fast),
+                box-shadow var(--transition-fast),
+                background var(--transition-base);
 }
 
-.boton-enviar {
-    width: 100%;
-    background: var(--gold);
-    color: var(--dark);
-    border: none;
-    padding: 15px;
-    border-radius: 8px;
-    font-weight: bold;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: 0.3s;
+.campo input::placeholder,
+.campo textarea::placeholder {
+    color: rgba(255, 255, 255, 0.3);
 }
 
-.boton-enviar:hover {
-    background: white;
+.campo input:focus,
+.campo textarea:focus {
+    outline: none;
+    background: rgba(11, 15, 24, 0.9);
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
 }
 
 /* --- INFORMACIÓN --- */
+.info-contacto {
+    display: flex;
+    flex-direction: column;
+}
+
 .info-titulo {
-    font-size: 2rem;
+    font-size: 2.2rem;
     margin-bottom: 30px;
-    color: var(--light);
+}
+
+.info-titulo span {
+    color: var(--gold);
 }
 
 .dato-contacto {
     margin-bottom: 30px;
+    position: relative;
+    padding-left: 20px;
+    border-left: 2px solid var(--gold);
 }
 
 .dato-contacto h4 {
-    margin: 0;
-    color: var(--gold);
-    font-size: 1.1rem;
+    margin: 0 0 5px 0;
+    color: var(--light);
+    font-size: 1.2rem;
+    font-family: var(--font-body);
+    font-weight: 700;
 }
 
 .dato-contacto p {
-    margin: 5px 0;
+    margin: 0;
     color: var(--text-gray);
+    font-size: 1.05rem;
+    line-height: 1.6;
 }
 
-/* --- HORARIOS --- */
+/* --- HORARIOS (GLASS CARD) --- */
 .tabla-horarios {
-    background: rgba(212, 175, 55, 0.05);
-    padding: 25px;
-    border-radius: 15px;
-    border: 1px solid rgba(212, 175, 55, 0.2);
+    margin-top: auto;
+    padding: 30px;
 }
 
 .tabla-horarios h4 {
-    margin: 0 0 15px 0;
-    font-size: 0.7rem;
+    margin: 0 0 20px 0;
+    font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: var(--light);
+    color: var(--gold);
+    font-family: var(--font-body);
+    text-align: center;
 }
 
 .fila-horario {
     display: flex;
     justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    font-size: 0.9rem;
+    padding: 12px 0;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+    font-size: 0.95rem;
 }
 
 .fila-horario span {
@@ -143,24 +142,35 @@
 
 .fila-horario strong {
     color: var(--light);
+    font-weight: 600;
+    font-family: monospace; /* Monospace for alignment */
+    font-size: 1.05rem;
 }
 
 .fila-horario:last-child {
     border-bottom: none;
-    color: var(--gold);
+    padding-bottom: 0;
+    margin-top: 5px;
 }
 
 .fila-horario:last-child strong {
     color: var(--gold);
 }
 
-/* --- RESPONSIVE (MÓVILES) --- */
-@media (max-width: 800px) {
+/* --- RESPONSIVE --- */
+@media (max-width: 900px) {
     .container-box {
         grid-template-columns: 1fr;
+        gap: 40px;
     }
+}
 
-    .hero-page h1 {
-        font-size: 2.2rem;
+@media (max-width: 600px) {
+    .hero-page {
+        padding-top: 120px;
+    }
+    
+    .caja-contacto {
+        padding: 30px 20px;
     }
 }
