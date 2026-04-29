@@ -35,7 +35,7 @@
     --shadow-gold-lg: 0 12px 40px rgba(212, 175, 55, 0.25);
 
     /* Typography */
-    --font-display: Arial, Helvetica, sans-serif;
+    --font-display: 'Playfair Display', Georgia, serif;
     --font-body: 'Manrope', 'Segoe UI', sans-serif;
 
     /* Spacing */

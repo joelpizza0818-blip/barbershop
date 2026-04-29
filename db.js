@@ -1,24 +1,31 @@
 const sql = require("mssql/msnodesqlv8");
+require("dotenv").config();
 
 const config = {
-
-    server: 'DESKTOP-AAHT4C4\\HOLA',
-    database: 'barberia',
-    driver: 'msnodesqlv8',
+    server: process.env.DB_SERVER,
+    database: process.env.DB_NAME,
+    driver: "msnodesqlv8",
     options: {
         trustedConnection: true,
-        trustServerCertificate: true
-    }
+        trustServerCertificate: true,
+    },
 };
 
+let pool = null;
+
+/**
+ * Devuelve la conexión al pool (singleton).
+ * Reutiliza la conexión si ya existe y está activa.
+ */
 async function getConnection() {
+    if (pool && pool.connected) return pool;
     try {
-        const pool = await sql.connect(config);
-        console.log("Conectado a la base de datos");
+        pool = await sql.connect(config);
+        console.log("✅ Conectado a la base de datos:", process.env.DB_NAME);
         return pool;
     } catch (error) {
-        console.error("error al conectar a la base de datos", error);
-        throw error; // Lanzar el error para que el servidor sepa que falló
+        console.error("❌ Error al conectar a la base de datos:", error.message);
+        throw error;
     }
 }
 

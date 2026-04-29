@@ -655,10 +655,6 @@ class PerfilComponent extends HTMLElement {
                             ${p.email}
                         </li>
                         <li class="info-item">
-                       
-                            
-                        </li>
-                        <li class="info-item">
                             <span class="info-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
