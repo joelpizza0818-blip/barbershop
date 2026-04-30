@@ -4,6 +4,8 @@ const cors = require("cors");
 
 const authRoutes = require("./proyect/routers/authRoutes");
 const citasRoutes = require("./proyect/routers/citasRoutes");
+const cortesRoutes = require("./proyect/routers/cortesRoutes");
+const usersRoutes  = require("./proyect/routers/usersRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,9 +14,17 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+// ─── Archivos Estáticos ──────────────────────────────────────────────────────
+const path = require("path");
+app.use(express.static(path.join(__dirname, "proyect", "public", "src")));
+app.use("/css", express.static(path.join(__dirname, "proyect", "public", "css")));
+app.use("/js", express.static(path.join(__dirname, "proyect", "public", "js")));
+
 // ─── Rutas ───────────────────────────────────────────────────────────────────
 app.use("/api", authRoutes);   // POST /api/registro  |  POST /api/login
 app.use("/api", citasRoutes);  // POST /api/agendar   |  GET  /api/miscitas
+app.use("/api", cortesRoutes); // GET /api/cortes | POST /api/cortes | PUT /api/cortes/:id | DELETE /api/cortes/:id
+app.use("/api", usersRoutes);  // GET /api/usuarios | PUT /api/usuarios/:id/role
 
 // ─── 404 catch-all ───────────────────────────────────────────────────────────
 app.use((req, res) => {

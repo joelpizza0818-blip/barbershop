@@ -14,7 +14,7 @@ async function agendar(req, res) {
     }
 
     try {
-        await crearCita({ id_usuario, name: name.trim(), service: service.trim(), date, time });
+        await crearCita({ id_usuario, service: service.trim(), date, time });
         res.status(201).json({ ok: true, mensaje: "Cita agendada con éxito." });
     } catch (error) {
         console.error("❌ Error al agendar cita:", error.message);

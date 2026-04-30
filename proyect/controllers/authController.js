@@ -30,6 +30,7 @@ async function registro(req, res) {
                 nombre: name.trim(),
                 email: email.trim(),
                 miembro_desde: new Date().toISOString(),
+                role: 'usuario',
             },
         });
     } catch (error) {
@@ -61,7 +62,7 @@ async function login(req, res) {
             return res.status(401).json({ ok: false, error: "Contraseña incorrecta." });
         }
 
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+        const token = jwt.sign({ id: user.id, role: user.role || 'usuario' }, process.env.JWT_SECRET, { expiresIn: "1d" });
 
         res.json({
             ok: true,
@@ -70,6 +71,7 @@ async function login(req, res) {
                 nombre: user.name,
                 email: user.email,
                 miembro_desde: user.fecha_registro,
+                role: user.role || 'usuario',
             },
         });
     } catch (error) {

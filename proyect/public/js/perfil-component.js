@@ -635,6 +635,7 @@ class PerfilComponent extends HTMLElement {
                             </svg>
                             ${p.membresia}
                         </span>
+                        ${(session.role === 'admin') ? '<span class="badge" style="margin-left:6px;background:rgba(212,175,55,0.25);border-color:rgba(212,175,55,0.6);">👑 Admin</span>' : ''}
                     </div>
                 </div>
 
@@ -858,6 +859,7 @@ class PerfilComponent extends HTMLElement {
 
             sr.getElementById('btnCerrarSesion').addEventListener('click', () => {
                 localStorage.removeItem('zhola_user');
+                localStorage.removeItem('token');
                 this.dispatchEvent(new CustomEvent('cerrar-sesion', { bubbles: true, composed: true }));
                 this._render();
             });

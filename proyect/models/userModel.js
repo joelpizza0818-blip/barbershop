@@ -28,4 +28,17 @@ async function createUser(name, email, hashedPassword) {
         .query("INSERT INTO Users (name, email, password, fecha_registro) VALUES (@name, @email, @password, GETDATE())");
 }
 
-module.exports = { findByEmail, createUser };
+/**
+ * Busca un usuario por su ID.
+ * @param {number} id
+ * @returns {object|null} Usuario encontrado o null
+ */
+async function findById(id) {
+    const pool = await getConnection();
+    const result = await pool.request()
+        .input("id", sql.Int, id)
+        .query("SELECT * FROM Users WHERE id = @id");
+    return result.recordset[0] || null;
+}
+
+module.exports = { findByEmail, createUser, findById };

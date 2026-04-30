@@ -49,61 +49,9 @@
     </section>
 
     <main>
-        <div class="menu-grid" data-reveal-stagger>
-            <div class="service-item glass-card">
-                <div class="service-header">
-                    <h3>Corte Signature</h3>
-                    <span class="price">$45</span>
-                </div>
-                <div class="service-content-wrapper">
-                    <img class="img-service"
-                        src="https://alphamenbarberias.com/api/image/eyJpdiI6Im9oTnUveG9TU2tNd1RuejZvQmhMRFE9PSIsInZhbHVlIjoiNjBFclJ4VGhlN0ZEZllmWUdTRlA0UGw2aWRONFpsU3VpU2dZZVRRR2NMeS9zZzBmRG1aMXhWZnJLZmJxNVVBb0ZaMjlwWVVWaG5BTXYwQ3BpczVsRXc9PSIsIm1hYyI6ImRmNTk0OTRlM2U2M2FlOTE2NTI4NThjZjEzMDIxY2RmZWFkMGY5ZTZhMmU2MWIyMmY3MjgxMTFkMjk4MjlkNWYiLCJ0YWciOiIifQ%253D%253D"
-                        alt="Corte Signature">
-                    <p>Asesoría personalizada, lavado relajante y peinado con productos premium diseñados para su tipo de cabello.</p>
-                </div>
-                <a href="#" class="btn-outline btn-sm" onclick="abrirModal(event)">Agendar Cita</a>
-            </div>
-
-            <div class="service-item glass-card">
-                <div class="service-header">
-                    <h3>Afeitado Clásico</h3>
-                    <span class="price">$40</span>
-                </div>
-                <div class="service-content-wrapper">
-                    <img class="img-service"
-                        src="https://www.labarberiashop.com/blog/wp-content/uploads/2025/05/Hombre-usando-brocha-de-afeitar-en-ritual-de-afeitado-clasico.webp"
-                        alt="Afeitado clásico">
-                    <p>Auténtico ritual de toalla caliente, rasurado impecable con navaja libre y un calmante bálsamo refrescante.</p>
-                </div>
-                <a href="#" class="btn-outline btn-sm" onclick="abrirModal(event)">Agendar Cita</a>
-            </div>
-
-            <div class="service-item glass-card">
-                <div class="service-header">
-                    <h3>Esculpido de Barba</h3>
-                    <span class="price">$35</span>
-                </div>
-                <div class="service-content-wrapper">
-                    <img class="img-service"
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTl8qAkPzr9Mj-mZWuLMC82VMc0NeWsHRb5lA&s"
-                        alt="Esculpido de barba">
-                    <p>Diseño geométrico de barba, perfilado exacto con navaja e hidratación profunda usando aceites nutritivos.</p>
-                </div>
-                <a href="#" class="btn-outline btn-sm" onclick="abrirModal(event)">Agendar Cita</a>
-            </div>
-
-            <div class="service-item glass-card">
-                <div class="service-header">
-                    <h3>Tratamiento Capilar</h3>
-                    <span class="price">$30</span>
-                </div>
-                <div class="service-content-wrapper">
-                    <img class="img-service"
-                        src="https://inesbe.com/wp-content/smush-webp/2025/01/Errores-comunes-en-el-lavado-capilar-1024x684.jpg.webp"
-                        alt="Tratamiento capilar">
-                    <p>Exfoliación suave pero profunda y un masaje revitalizante de tejido profundo para potenciar la salud de sus folículos pre-corte.</p>
-                </div>
-                <a href="#" class="btn-outline btn-sm" onclick="abrirModal(event)">Agendar Cita</a>
+        <div class="menu-grid" id="cortesGrid" data-reveal-stagger>
+            <div class="loading-cortes" style="grid-column:1/-1;text-align:center;padding:40px;color:#64748b;font-family:'Manrope',sans-serif;">
+                Cargando servicios...
             </div>
         </div>
 
@@ -127,7 +75,7 @@
                         </ul>
                     </div>
                     <div class="package-footer">
-                        <a href="#" class="btn-primary w-100" onclick="abrirModal(event)">Reservar Paquete</a>
+                        <a href="#" class="btn-primary w-100" onclick="abrirReserva(event)">Reservar Paquete</a>
                     </div>
                 </div>
 
@@ -143,7 +91,7 @@
                         </ul>
                     </div>
                      <div class="package-footer">
-                        <a href="#" class="btn-outline w-100" onclick="abrirModal(event)">Reservar Paquete</a>
+                        <a href="#" class="btn-outline w-100" onclick="abrirReserva(event)">Reservar Paquete</a>
                     </div>
                 </div>
             </div>
@@ -222,13 +170,45 @@
             if(el) el.open();
         }
         
-        // Listeners Pefil
+        // Listeners Perfil
         document.getElementById('modalPerfil').addEventListener('cerrar-sesion', () => {
             console.log('Sesión cerrada');
         });
         document.getElementById('modalPerfil').addEventListener('editar-perfil', () => {
             console.log('Editar perfil');
         });
+
+        // ── Cargar cortes dinámicamente desde la API ──
+        async function cargarCortes() {
+            const grid = document.getElementById('cortesGrid');
+            try {
+                const res = await fetch('/api/cortes');
+                const data = await res.json();
+                if (data.ok && data.cortes.length) {
+                    grid.innerHTML = data.cortes.map(c => `
+                        <div class="service-item glass-card">
+                            <div class="service-header">
+                                <h3>${c.nombre}</h3>
+                                <span class="price">$${Number(c.precio).toFixed(2)}</span>
+                            </div>
+                            <div class="service-content-wrapper">
+                                ${c.foto_url
+                                    ? `<img class="img-service" src="${c.foto_url}" alt="${c.nombre}" onerror="this.style.display='none'">`
+                                    : ''}
+                                <p>${c.descripcion || 'Servicio premium de barbería.'}</p>
+                            </div>
+                            <a href="#" class="btn-outline btn-sm" onclick="abrirReserva(event)">Agendar Cita</a>
+                        </div>
+                    `).join('');
+                } else {
+                    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#64748b;">No hay servicios disponibles.</div>';
+                }
+            } catch (e) {
+                grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#fca5a5;">❌ Error al cargar los servicios.</div>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', cargarCortes);
     </script>
 
 </body>

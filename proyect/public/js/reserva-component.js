@@ -626,7 +626,7 @@ class ReservaComponent extends HTMLElement {
             btnPagar.textContent = 'Procesando...';
 
             try {
-                const respuesta = await fetch('http://localhost:3000/agendar', {
+                const respuesta = await fetch('http://localhost:3000/api/agendar', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

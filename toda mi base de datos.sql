@@ -5,38 +5,30 @@
 -- ============================================================
 
 -- Crear base de datos (solo si no existe)
-IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'barberia')
-BEGIN
-    CREATE DATABASE barberia;
-END
-GO
+
+CREATE DATABASE barberia;
+go
 
 USE barberia;
-GO
+go
 
--- ============================================================
---  TABLA: Users
---  Almacena los clientes registrados en el sistema.
--- ============================================================
-IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Users')
-BEGIN
-    CREATE TABLE Users (
+
+
+CREATE TABLE Users (
         id             INT           IDENTITY(1,1) PRIMARY KEY,
         name           VARCHAR(100)  NOT NULL,
         email          VARCHAR(100)  NOT NULL UNIQUE,
         password       VARCHAR(255)  NOT NULL,
         fecha_registro DATE          NOT NULL DEFAULT GETDATE()
-    );
-END
-GO
+);
+go
 
 -- ============================================================
 --  TABLA: Citas
 --  Almacena las citas agendadas por los clientes.
 --  La columna 'name' fue eliminada: se obtiene via JOIN con Users.
 -- ============================================================
-IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Citas')
-BEGIN
+
     CREATE TABLE Citas (
         id         INT          IDENTITY(1,1) PRIMARY KEY,
         id_usuario INT          NOT NULL,
@@ -52,33 +44,11 @@ BEGIN
             ON DELETE CASCADE
             ON UPDATE CASCADE
     );
-END
-GO
-
--- ============================================================
---  INDICES
---  Mejoran el rendimiento en las consultas mas frecuentes.
--- ============================================================
-
--- Busqueda de citas por usuario
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Citas_id_usuario')
-    CREATE INDEX IX_Citas_id_usuario ON Citas(id_usuario);
-GO
-
--- Busqueda de citas por fecha
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Citas_date')
-    CREATE INDEX IX_Citas_date ON Citas(date);
-GO
-
--- Busqueda compuesta usuario + fecha (la mas comun)
-IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Citas_usuario_date')
-    CREATE INDEX IX_Citas_usuario_date ON Citas(id_usuario, date);
-GO
-
+	go
 
 
 select * from Users
-
+select * from Citas
 
 -- ============================================================
 --  CONSULTAS UTILES (referencia / produccion)
