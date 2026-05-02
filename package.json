@@ -10,6 +10,7 @@
     "test:db": "node test-connection.js",
     "diagnose": "node test-connection.js",
     "init:db": "node init-db.js",
+    "debug:db": "node debug-db.js",
     "setup": "npm install && node init-db.js"
   },
   "keywords": [],

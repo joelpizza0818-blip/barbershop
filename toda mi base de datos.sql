@@ -1,4 +1,11 @@
-﻿CREATE TABLE Users (
+﻿
+
+use barberia
+
+
+
+
+CREATE TABLE Users (
     id          INT IDENTITY(1,1) PRIMARY KEY,
     name        VARCHAR(100)  NOT NULL,
     email       VARCHAR(100)  NOT NULL UNIQUE,
@@ -28,3 +35,6 @@ CREATE TABLE Citas (
     CONSTRAINT FK_Citas_Usuario FOREIGN KEY (id_usuario)
         REFERENCES Users(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
+
+
+select * from Users

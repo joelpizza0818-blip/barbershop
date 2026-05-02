@@ -21,11 +21,16 @@ async function findByEmail(email) {
  */
 async function createUser(name, email, hashedPassword) {
     const pool = await getConnection();
-    await pool.request()
+    const result = await pool.request()
         .input("name", sql.VarChar, name)
         .input("email", sql.VarChar, email)
         .input("password", sql.VarChar, hashedPassword)
-        .query("INSERT INTO Users (name, email, password, fecha_registro) VALUES (@name, @email, @password, GETDATE())");
+        .query(`
+            INSERT INTO Users (name, email, password, fecha_registro)
+            OUTPUT INSERTED.id
+            VALUES (@name, @email, @password, GETDATE())
+        `);
+    return result.recordset[0].id;
 }
 
 /**
