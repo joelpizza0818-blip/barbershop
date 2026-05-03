@@ -22,10 +22,13 @@ async function registro(req, res) {
         }
 
         const hash = await bcrypt.hash(password, 10);
-        await createUser(name.trim(), email.trim(), hash);
+        const newUserId = await createUser(name.trim(), email.trim(), hash);
+
+        const token = jwt.sign({ id: newUserId, role: 'usuario' }, process.env.JWT_SECRET, { expiresIn: "1d" });
 
         res.status(201).json({
             ok: true,
+            token,
             user: {
                 nombre: name.trim(),
                 email: email.trim(),

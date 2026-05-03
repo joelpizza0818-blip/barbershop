@@ -20,8 +20,20 @@ class PerfilComponent extends HTMLElement {
 
     /* ── Utilidad: devuelve el usuario guardado o null ── */
     _getSession() {
-        try { return JSON.parse(localStorage.getItem('zhola_user')) || null; }
-        catch { return null; }
+        try {
+            const userStr = localStorage.getItem('zhola_user');
+            const token = localStorage.getItem('token');
+            
+            if (userStr && token) {
+                return JSON.parse(userStr);
+            } else if (userStr && !token) {
+                // Estado corrupto (usuario sin token). Limpiarlo automáticamente.
+                localStorage.removeItem('zhola_user');
+            }
+        } catch (e) {
+            return null;
+        }
+        return null;
     }
 
     connectedCallback() {
