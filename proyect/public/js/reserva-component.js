@@ -413,15 +413,7 @@ class ReservaComponent extends HTMLElement {
                     <div class="form-group">
                         <label for="servicio">Servicio</label>
                         <select id="servicio" name="servicio" required>
-                            <option  value="" disabled selected>Servicios </option>
-                            <option value="corte">✂️ Corte Signature — $45</option>
-                            <option value="barba">🪒 Esculpido de Barba — $40</option>
-                            <option value="afeitado">💈 Afeitado Clásico — $35</option>
-                            <option value="tratamiento">⭐Tratamiento Capilar — $30</option>
-                            <option style="color: #D4AF37;" value="" disabled>Servicios VIP </option>
-                            <option value="Full">👑 Full Experience — $105</option>
-                            <option value="Executive">👨‍💼 The Executive — $75</option>
-                            
+                            <option value="" disabled selected>Cargando servicios...</option>
                         </select>
                     </div>
 
@@ -515,6 +507,55 @@ class ReservaComponent extends HTMLElement {
         this.shadowRoot.getElementById('fechaCita').min = hoy;
         this.classList.add('active');
         document.body.style.overflow = 'hidden';
+        this._loadCortes();
+    }
+
+    /** Carga los cortes dinámicamente desde la API */
+    async _loadCortes() {
+        const select = this.shadowRoot.getElementById('servicio');
+        try {
+            const res = await fetch('/api/cortes');
+            const data = await res.json();
+
+            if (data.ok) {
+                this._cortesDisponibles = data.cortes;
+                
+                select.innerHTML = '<option value="" disabled selected>Selecciona un servicio</option>';
+                
+                // 1. Añadir cortes normales
+                const normales = data.cortes.filter(c => c.tipo !== 'vip');
+                normales.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c.nombre;
+                    opt.textContent = `✂️ ${c.nombre} — $${Number(c.precio).toFixed(2)}`;
+                    select.appendChild(opt);
+                });
+                
+                // 2. Añadir paquetes VIP
+                const vips = data.cortes.filter(c => c.tipo === 'vip');
+                if (vips.length > 0) {
+                    const optSeparator = document.createElement('option');
+                    optSeparator.style.color = '#D4AF37';
+                    optSeparator.value = '';
+                    optSeparator.disabled = true;
+                    optSeparator.textContent = 'Servicios VIP';
+                    select.appendChild(optSeparator);
+                    
+                    vips.forEach(p => {
+                        const opt = document.createElement('option');
+                        opt.value = p.nombre;
+                        opt.textContent = `👑 ${p.nombre} — $${Number(p.precio).toFixed(2)}`;
+                        select.appendChild(opt);
+                    });
+                }
+                
+            } else {
+                select.innerHTML = '<option value="" disabled selected>No hay servicios disponibles</option>';
+            }
+        } catch (e) {
+            console.error('Error cargando cortes en el modal de reserva', e);
+            select.innerHTML = '<option value="" disabled selected>Error al cargar servicios</option>';
+        }
     }
 
     /** Cierra y resetea el modal */
@@ -543,11 +584,10 @@ class ReservaComponent extends HTMLElement {
     /** Muestra el panel de cobro con los datos del formulario */
     _irAPaso2(datos) {
         const sr = this.shadowRoot;
-        const precios = {
-            corte: 45, barba: 40, afeitado: 35, tratamiento: 30,
-            Full: 105, Executive: 75
-        };
-        const precio = precios[datos.servicioVal] ?? '?';
+        
+        // Buscar el precio dinámicamente en los cortes cargados
+        const corteSelec = (this._cortesDisponibles || []).find(c => c.nombre === datos.servicioVal);
+        const precio = corteSelec ? Number(corteSelec.precio).toFixed(2) : '?';
 
         sr.getElementById('rNombre').textContent = datos.nombre;
         sr.getElementById('rServicio').textContent = datos.servicio;

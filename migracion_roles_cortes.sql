@@ -3,9 +3,9 @@
 --  Ejecutar en la base de datos 'barberia'
 --  Fecha: 2026-04-29
 -- ============================================================
-
-USE barberia;
 GO
+
+USE barberia2;
 
 -- ============================================================
 --  1. Agregar columna 'role' a la tabla Users

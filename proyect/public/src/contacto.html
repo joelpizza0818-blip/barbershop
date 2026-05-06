@@ -157,9 +157,50 @@
 
     <!-- Web Components -->
     <perfil-component id="modalPerfil"></perfil-component>
+    <admin-cortes-component id="modalAdminCortes"></admin-cortes-component>
+    <admin-users-component id="modalAdminUsers"></admin-users-component>
+
+    <!-- Admin floating button (hidden by default) -->
+    <button class="admin-fab" id="btnAdminCortes" style="display:none;" onclick="abrirAdminCortes()">
+        ⚙️ Gestionar Cortes
+    </button>
+    <button class="admin-fab admin-fab-users" id="btnAdminUsers" style="display:none;" onclick="abrirAdminUsers()">
+        👥 Gestionar Usuarios
+    </button>
+
+    <style>
+        .admin-fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 900;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #D4AF37, #b8922e);
+            color: #111621;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 8px 32px rgba(212,175,55,0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+            letter-spacing: 0.02em;
+        }
+        .admin-fab:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(212,175,55,0.45);
+        }
+        .admin-fab:active { transform: translateY(-1px); }
+        .admin-fab-users {
+            bottom: 90px;
+        }
+    </style>
 
     <!-- Scripts -->
     <script defer src="../js/perfil-component.js"></script>
+    <script defer src="../js/admin-cortes-component.js"></script>
+    <script defer src="../js/admin-users-component.js"></script>
     <script defer src="../js/animations.js"></script> <!-- AÑADIDO ANIMATIONS.JS -->
 
     <script>
@@ -167,6 +208,45 @@
             e.preventDefault();
             document.getElementById('modalPerfil').open();
         }
+        function abrirAdminCortes() {
+            const el = document.getElementById('modalAdminCortes');
+            if(el) el.open();
+        }
+        function abrirAdminUsers() {
+            const el = document.getElementById('modalAdminUsers');
+            if(el) el.open();
+        }
+
+        // ── Mostrar/ocultar botón admin según rol ──
+        function checkAdminVisibility() {
+            try {
+                const user = JSON.parse(localStorage.getItem('zhola_user'));
+                const btnCortes = document.getElementById('btnAdminCortes');
+                const btnUsers = document.getElementById('btnAdminUsers');
+                if (user && user.role === 'admin') {
+                    if(btnCortes) btnCortes.style.display = 'block';
+                    if(btnUsers) btnUsers.style.display = 'block';
+                } else {
+                    if(btnCortes) btnCortes.style.display = 'none';
+                    if(btnUsers) btnUsers.style.display = 'none';
+                }
+            } catch(e) {
+                const btnCortes = document.getElementById('btnAdminCortes');
+                const btnUsers = document.getElementById('btnAdminUsers');
+                if(btnCortes) btnCortes.style.display = 'none';
+                if(btnUsers) btnUsers.style.display = 'none';
+            }
+        }
+
+        // Revisar al cargar
+        document.addEventListener('DOMContentLoaded', checkAdminVisibility);
+
+        // Revisar cuando se hace login/logout (eventos del perfil-component)
+        document.addEventListener('login-success', checkAdminVisibility);
+        document.addEventListener('cerrar-sesion', checkAdminVisibility);
+
+        // También revisar cambios en localStorage desde otras pestañas
+        window.addEventListener('storage', checkAdminVisibility);
         
         document.getElementById('modalPerfil').addEventListener('cerrar-sesion', () => {
             console.log('Sesión cerrada');

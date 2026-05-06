@@ -55,45 +55,13 @@
             </div>
         </div>
 
-        <section class="packages">
+        <section class="packages" id="seccionVip">
             <div data-reveal class="text-center" style="margin-bottom: 40px;">
                 <p class="section-label">Eleva tu Experiencia</p>
                 <h2 class="section-title">Paquetes <span>Especiales</span></h2>
             </div>
-            
-            <div class="package-grid" data-reveal-stagger>
-                <div class="package-card glass-card premium-border">
-                    <div class="package-body">
-                        <h3>The Full Experience</h3>
-                        <span class="price">$105</span>
-                        <ul>
-                            <li>Corte Signature</li>
-                            <li>Afeitado Clásico</li>
-                            <li>Tratamiento  Capilar</li>
-                            <li>Sesión relajante de 90 minutos</li>
-                            <li>Bebida premium de cortesía</li>
-                        </ul>
-                    </div>
-                    <div class="package-footer">
-                        <a href="#" class="btn-primary w-100" onclick="abrirReserva(event)">Reservar Paquete</a>
-                    </div>
-                </div>
-
-                <div class="package-card glass-card">
-                     <div class="package-body">
-                        <h3>The Executive</h3>
-                        <span class="price">$75</span>
-                        <ul>
-                            <li>Corte Signature </li>
-                            <li>Esculpido de Barba o Afeitado</li>
-                            <li>Sesión eficiente de 60 minutos</li>
-                            <li>Acabado refrescante con toalla caliente</li>
-                        </ul>
-                    </div>
-                     <div class="package-footer">
-                        <a href="#" class="btn-outline w-100" onclick="abrirReserva(event)">Reservar Paquete</a>
-                    </div>
-                </div>
+            <div class="package-grid" id="vipGrid" data-reveal-stagger>
+                <div style="grid-column:1/-1;text-align:center;padding:30px;color:#64748b;font-family:'Manrope',sans-serif;">Cargando paquetes...</div>
             </div>
         </section>
     </main>
@@ -151,10 +119,51 @@
     <perfil-component id="modalPerfil"></perfil-component>
     <!-- ELIMINADO ID DUPLICADO modalPerfil PARA reserva-component -->
     <reserva-component id="modalReserva"></reserva-component>
+    <admin-cortes-component id="modalAdminCortes"></admin-cortes-component>
+    <admin-users-component id="modalAdminUsers"></admin-users-component>
+
+    <!-- Admin floating button (hidden by default) -->
+    <button class="admin-fab" id="btnAdminCortes" style="display:none;" onclick="abrirAdminCortes()">
+        ⚙️ Gestionar Cortes
+    </button>
+    <button class="admin-fab admin-fab-users" id="btnAdminUsers" style="display:none;" onclick="abrirAdminUsers()">
+        👥 Gestionar Usuarios
+    </button>
+
+    <style>
+        .admin-fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 900;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #D4AF37, #b8922e);
+            color: #111621;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 8px 32px rgba(212,175,55,0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+            letter-spacing: 0.02em;
+        }
+        .admin-fab:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(212,175,55,0.45);
+        }
+        .admin-fab:active { transform: translateY(-1px); }
+        .admin-fab-users {
+            bottom: 90px;
+        }
+    </style>
 
     <!-- Scripts -->
     <script defer src="../js/perfil-component.js"></script>
     <script type="module" src="../js/reserva-component.js"></script>
+    <script defer src="../js/admin-cortes-component.js"></script>
+    <script defer src="../js/admin-users-component.js"></script>
     <script defer src="../js/animations.js"></script>
 
     <script>
@@ -169,6 +178,45 @@
             const el = document.getElementById('modalReserva');
             if(el) el.open();
         }
+        function abrirAdminCortes() {
+            const el = document.getElementById('modalAdminCortes');
+            if(el) el.open();
+        }
+        function abrirAdminUsers() {
+            const el = document.getElementById('modalAdminUsers');
+            if(el) el.open();
+        }
+
+        // ── Mostrar/ocultar botón admin según rol ──
+        function checkAdminVisibility() {
+            try {
+                const user = JSON.parse(localStorage.getItem('zhola_user'));
+                const btnCortes = document.getElementById('btnAdminCortes');
+                const btnUsers = document.getElementById('btnAdminUsers');
+                if (user && user.role === 'admin') {
+                    if(btnCortes) btnCortes.style.display = 'block';
+                    if(btnUsers) btnUsers.style.display = 'block';
+                } else {
+                    if(btnCortes) btnCortes.style.display = 'none';
+                    if(btnUsers) btnUsers.style.display = 'none';
+                }
+            } catch(e) {
+                const btnCortes = document.getElementById('btnAdminCortes');
+                const btnUsers = document.getElementById('btnAdminUsers');
+                if(btnCortes) btnCortes.style.display = 'none';
+                if(btnUsers) btnUsers.style.display = 'none';
+            }
+        }
+
+        // Revisar al cargar
+        document.addEventListener('DOMContentLoaded', checkAdminVisibility);
+
+        // Revisar cuando se hace login/logout (eventos del perfil-component)
+        document.addEventListener('login-success', checkAdminVisibility);
+        document.addEventListener('cerrar-sesion', checkAdminVisibility);
+
+        // También revisar cambios en localStorage desde otras pestañas
+        window.addEventListener('storage', checkAdminVisibility);
         
         // Listeners Perfil
         document.getElementById('modalPerfil').addEventListener('cerrar-sesion', () => {
@@ -178,28 +226,54 @@
             console.log('Editar perfil');
         });
 
-        // ── Cargar cortes dinámicamente desde la API ──
+        // ── Cargar cortes y paquetes dinámicamente desde la API ──
         async function cargarCortes() {
-            const grid = document.getElementById('cortesGrid');
+            const grid    = document.getElementById('cortesGrid');
+            const vipGrid = document.getElementById('vipGrid');
             try {
-                const res = await fetch('/api/cortes');
+                const res  = await fetch('/api/cortes');
                 const data = await res.json();
                 if (data.ok && data.cortes.length) {
-                    grid.innerHTML = data.cortes.map(c => `
-                        <div class="service-item glass-card">
-                            <div class="service-header">
-                                <h3>${c.nombre}</h3>
-                                <span class="price">$${Number(c.precio).toFixed(2)}</span>
+                    const normales = data.cortes.filter(c => c.tipo !== 'vip');
+                    const vips     = data.cortes.filter(c => c.tipo === 'vip');
+
+                    // Servicios normales
+                    if (normales.length) {
+                        grid.innerHTML = normales.map(c => `
+                            <div class="service-item glass-card">
+                                <div class="service-header">
+                                    <h3>${c.nombre}</h3>
+                                    <span class="price">$${Number(c.precio).toFixed(2)}</span>
+                                </div>
+                                <div class="service-content-wrapper">
+                                    ${c.foto_url ? `<img class="img-service" src="${c.foto_url}" alt="${c.nombre}" onerror="this.style.display='none'">` : ''}
+                                    <p>${c.descripcion || 'Servicio premium de barbería.'}</p>
+                                </div>
+                                <a href="#" class="btn-outline btn-sm" onclick="abrirReserva(event)">Agendar Cita</a>
                             </div>
-                            <div class="service-content-wrapper">
-                                ${c.foto_url
-                                    ? `<img class="img-service" src="${c.foto_url}" alt="${c.nombre}" onerror="this.style.display='none'">`
-                                    : ''}
-                                <p>${c.descripcion || 'Servicio premium de barbería.'}</p>
+                        `).join('');
+                    } else {
+                        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#64748b;">No hay servicios disponibles.</div>';
+                    }
+
+                    // Paquetes especiales VIP
+                    if (vips.length) {
+                        vipGrid.innerHTML = vips.map((c, i) => `
+                            <div class="package-card glass-card ${i === 0 ? 'premium-border' : ''}">
+                                <div class="package-body">
+                                    <h3>${c.nombre}</h3>
+                                    <span class="price">$${Number(c.precio).toFixed(2)}</span>
+                                    ${c.descripcion ? `<p style="color:#94a3b8;font-family:'Manrope',sans-serif;font-size:0.9rem;margin-top:14px;line-height:1.6;">${c.descripcion}</p>` : ''}
+                                </div>
+                                <div class="package-footer">
+                                    <a href="#" class="${i === 0 ? 'btn-primary' : 'btn-outline'} w-100" onclick="abrirReserva(event)">Reservar Paquete</a>
+                                </div>
                             </div>
-                            <a href="#" class="btn-outline btn-sm" onclick="abrirReserva(event)">Agendar Cita</a>
-                        </div>
-                    `).join('');
+                        `).join('');
+                    } else {
+                        vipGrid.innerHTML = '<div style="text-align:center;padding:30px;color:#64748b;font-family:Manrope,sans-serif;">No hay paquetes disponibles.</div>';
+                    }
+
                 } else {
                     grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#64748b;">No hay servicios disponibles.</div>';
                 }

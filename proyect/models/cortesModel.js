@@ -7,7 +7,7 @@ const { getConnection, sql } = require("../../db");
 async function getAllCortes() {
     const pool = await getConnection();
     const result = await pool.request()
-        .query("SELECT id, nombre, precio, descripcion, foto_url, created_at FROM Cortes ORDER BY id ASC");
+        .query("SELECT id, nombre, precio, descripcion, foto_url, tipo, created_at FROM Cortes ORDER BY id ASC");
     return result.recordset;
 }
 
@@ -26,20 +26,21 @@ async function getCorteById(id) {
 
 /**
  * Crea un nuevo corte de cabello.
- * @param {{nombre: string, precio: number, descripcion: string, foto_url: string}} datos
+ * @param {{nombre: string, precio: number, descripcion: string, foto_url: string, tipo: string}} datos
  */
 async function crearCorte(datos) {
-    const { nombre, precio, descripcion, foto_url } = datos;
+    const { nombre, precio, descripcion, foto_url, tipo } = datos;
     const pool = await getConnection();
     const result = await pool.request()
         .input("nombre",      sql.VarChar(100), nombre)
         .input("precio",      sql.Decimal(10, 2), precio)
         .input("descripcion", sql.VarChar(500), descripcion || '')
         .input("foto_url",    sql.VarChar(500), foto_url || '')
+        .input("tipo",        sql.VarChar(50), tipo || 'normal')
         .query(`
-            INSERT INTO Cortes (nombre, precio, descripcion, foto_url)
+            INSERT INTO Cortes (nombre, precio, descripcion, foto_url, tipo)
             OUTPUT INSERTED.*
-            VALUES (@nombre, @precio, @descripcion, @foto_url)
+            VALUES (@nombre, @precio, @descripcion, @foto_url, @tipo)
         `);
     return result.recordset[0];
 }
@@ -47,10 +48,10 @@ async function crearCorte(datos) {
 /**
  * Actualiza un corte existente.
  * @param {number} id
- * @param {{nombre: string, precio: number, descripcion: string, foto_url: string}} datos
+ * @param {{nombre: string, precio: number, descripcion: string, foto_url: string, tipo: string}} datos
  */
 async function actualizarCorte(id, datos) {
-    const { nombre, precio, descripcion, foto_url } = datos;
+    const { nombre, precio, descripcion, foto_url, tipo } = datos;
     const pool = await getConnection();
     const result = await pool.request()
         .input("id",          sql.Int, id)
@@ -58,9 +59,10 @@ async function actualizarCorte(id, datos) {
         .input("precio",      sql.Decimal(10, 2), precio)
         .input("descripcion", sql.VarChar(500), descripcion || '')
         .input("foto_url",    sql.VarChar(500), foto_url || '')
+        .input("tipo",        sql.VarChar(50), tipo || 'normal')
         .query(`
             UPDATE Cortes
-            SET nombre = @nombre, precio = @precio, descripcion = @descripcion, foto_url = @foto_url
+            SET nombre = @nombre, precio = @precio, descripcion = @descripcion, foto_url = @foto_url, tipo = @tipo
             WHERE id = @id;
             SELECT * FROM Cortes WHERE id = @id;
         `);

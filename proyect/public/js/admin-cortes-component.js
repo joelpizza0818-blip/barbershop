@@ -4,6 +4,7 @@ class AdminCortesComponent extends HTMLElement {
         this.attachShadow({ mode: 'open' });
         this._cortes = [];
         this._editandoId = null;
+        this._tipoActual = 'normal'; // Track tipo reliably as instance property
     }
 
     connectedCallback() { this._render(); }
@@ -34,13 +35,22 @@ class AdminCortesComponent extends HTMLElement {
                 <div class="modal-body">
                     <!-- Formulario -->
                     <div class="form-section">
-                        <p class="section-label" id="formTitle">➕ Añadir nuevo corte</p>
-                        <div class="form-group">
+                        <p class="section-label" id="formTitle">➕ Añadir nuevo servicio</p>
+
+                        <!-- Selector de Tipo (primero para que controle el formulario) -->
+                        <div class="tipo-tabs">
+                            <button type="button" class="tipo-tab active" id="tabNormal" data-tipo="normal">✂️ Servicio Normal</button>
+                            <button type="button" class="tipo-tab" id="tabVip" data-tipo="vip">👑 Paquete Especial</button>
+                        </div>
+
+                        <!-- Campo foto: solo visible en Normal -->
+                        <div class="form-group" id="grupFoto">
                             <label>📷 Foto (URL de imagen)</label>
                             <input class="form-input" type="url" id="fotoUrl" placeholder="https://ejemplo.com/foto.jpg">
                         </div>
+
                         <div class="form-group">
-                            <label>✂️ Nombre del corte</label>
+                            <label id="labelNombre">✂️ Nombre del corte</label>
                             <input class="form-input" type="text" id="nombre" placeholder="Ej: Degradado Moderno">
                         </div>
                         <div class="form-row">
@@ -54,7 +64,7 @@ class AdminCortesComponent extends HTMLElement {
                             <textarea class="form-input form-textarea" id="descripcion" placeholder="Describe el servicio..." rows="3"></textarea>
                         </div>
                         <div class="form-actions">
-                            <button class="btn-gold" id="btnGuardar">💾 Guardar Corte</button>
+                            <button class="btn-gold" id="btnGuardar">💾 Guardar</button>
                             <button class="btn-cancel" id="btnCancelar" style="display:none;">Cancelar Edición</button>
                         </div>
                         <div id="msgForm" class="mensaje"></div>
@@ -62,11 +72,14 @@ class AdminCortesComponent extends HTMLElement {
 
                     <hr class="divider">
 
-                    <!-- Lista de cortes -->
-                    <p class="section-label">📋 Cortes registrados</p>
-                    <div id="listaCortes" class="cortes-list">
-                        <div class="loading">Cargando cortes...</div>
-                    </div>
+                    <!-- Lista dividida en 2 secciones -->
+                    <p class="section-label">✂️ Servicios Normales</p>
+                    <div id="listaNormales" class="cortes-list"><div class="loading">Cargando...</div></div>
+
+                    <hr class="divider" style="margin-top:20px;">
+
+                    <p class="section-label" style="color:#f6c90e;">👑 Paquetes Especiales</p>
+                    <div id="listaVip" class="cortes-list"><div class="loading">Cargando...</div></div>
                 </div>
             </div>
         `;
@@ -100,8 +113,16 @@ class AdminCortesComponent extends HTMLElement {
             .form-input { width:100%; padding:10px 14px; box-sizing:border-box; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:10px; color:#f6f6f8; font-family:'Manrope',sans-serif; font-size:0.93rem; outline:none; transition:border-color 0.2s; }
             .form-input:focus { border-color:rgba(212,175,55,0.6); }
             .form-input::placeholder { color:rgba(255,255,255,0.3); }
+            .form-input option { background:#1a1f2b; color:#f6f6f8; }
             .form-textarea { resize:vertical; min-height:60px; }
-            .form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+            .form-row { display:grid; grid-template-columns:1fr; gap:14px; }
+
+            /* ===== TIPO TABS ===== */
+            .tipo-tabs { display:flex; gap:8px; margin-bottom:18px; }
+            .tipo-tab { flex:1; padding:10px 12px; border:2px solid rgba(255,255,255,0.1); border-radius:10px; background:rgba(255,255,255,0.04); color:#64748b; font-family:'Manrope',sans-serif; font-size:0.85rem; font-weight:700; cursor:pointer; transition:all 0.2s; }
+            .tipo-tab:hover { border-color:rgba(212,175,55,0.35); color:#D4AF37; }
+            .tipo-tab.active { border-color:#D4AF37; background:rgba(212,175,55,0.12); color:#D4AF37; }
+            .tipo-tab[data-tipo="vip"].active { border-color:#f6c90e; background:rgba(246,201,14,0.1); color:#f6c90e; }
 
             .form-actions { display:flex; gap:10px; margin-top:4px; }
             .btn-gold { flex:1; padding:12px; background:var(--gold); color:var(--dark); border:none; border-radius:10px; font-family:'Manrope',sans-serif; font-size:0.92rem; font-weight:800; cursor:pointer; letter-spacing:0.03em; transition:background 0.2s,transform 0.15s; }
@@ -172,18 +193,27 @@ class AdminCortesComponent extends HTMLElement {
         sr.getElementById('nombre').value = '';
         sr.getElementById('precio').value = '';
         sr.getElementById('descripcion').value = '';
-        sr.getElementById('formTitle').textContent = '➕ Añadir nuevo corte';
-        sr.getElementById('btnGuardar').textContent = '💾 Guardar Corte';
+        this._tipoActual = 'normal';
+        sr.getElementById('formTitle').textContent = '➕ Añadir nuevo servicio';
+        sr.getElementById('btnGuardar').textContent = '💾 Guardar';
         sr.getElementById('btnCancelar').style.display = 'none';
         sr.getElementById('msgForm').className = 'mensaje';
         sr.getElementById('msgForm').textContent = '';
+        sr.getElementById('grupFoto').style.display = '';
+        sr.getElementById('labelNombre').textContent = '✂️ Nombre del corte';
+        // Reset active tab
+        sr.querySelectorAll('.tipo-tab').forEach(t => t.classList.toggle('active', t.dataset.tipo === 'normal'));
         this._editandoId = null;
+        this._renderCortes();
     }
 
     async _cargarCortes() {
         const sr = this.shadowRoot;
-        const lista = sr.getElementById('listaCortes');
-        lista.innerHTML = '<div class="loading">Cargando cortes...</div>';
+        const listaNorm = sr.getElementById('listaNormales');
+        const listaVip = sr.getElementById('listaVip');
+        const loading = '<div class="loading">Cargando...</div>';
+        listaNorm.innerHTML = loading;
+        listaVip.innerHTML = loading;
 
         try {
             const res = await fetch('http://localhost:3000/api/cortes');
@@ -192,24 +222,34 @@ class AdminCortesComponent extends HTMLElement {
                 this._cortes = data.cortes;
                 this._renderCortes();
             } else {
-                lista.innerHTML = '<div class="empty-state">Error al cargar cortes.</div>';
+                listaNorm.innerHTML = '<div class="empty-state">Error al cargar.</div>';
+                listaVip.innerHTML = '';
             }
         } catch (e) {
-            lista.innerHTML = '<div class="empty-state">❌ No se pudo conectar al servidor.</div>';
+            listaNorm.innerHTML = '<div class="empty-state">❌ No se pudo conectar al servidor.</div>';
+            listaVip.innerHTML = '';
         }
     }
 
     _renderCortes() {
-        const lista = this.shadowRoot.getElementById('listaCortes');
-        if (!this._cortes.length) {
-            lista.innerHTML = '<div class="empty-state">No hay cortes registrados. ¡Añade el primero!</div>';
-            return;
-        }
-        lista.innerHTML = this._cortes.map(c => `
+        const sr = this.shadowRoot;
+        const listaNorm = sr.getElementById('listaNormales');
+        const listaVip  = sr.getElementById('listaVip');
+
+        const normales = this._cortes.filter(c => (c.tipo || 'normal') === 'normal');
+        const vips     = this._cortes.filter(c => c.tipo === 'vip');
+
+        // Helper para renderizar en un contenedor dado
+        const renderList = (lista, items) => {
+            if (!items.length) {
+                lista.innerHTML = '<div class="empty-state">Sin registros aquí todavía.</div>';
+                return;
+            }
+            lista.innerHTML = items.map(c => `
             <div class="corte-card" data-id="${c.id}">
                 ${c.foto_url
-                    ? `<img class="corte-img" src="${c.foto_url}" alt="${c.nombre}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="corte-img-placeholder" style="display:none">✂️</div>`
-                    : `<div class="corte-img-placeholder">✂️</div>`}
+                ? `<img class="corte-img" src="${c.foto_url}" alt="${c.nombre}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="corte-img-placeholder" style="display:none">✂️</div>`
+                : `<div class="corte-img-placeholder">✂️</div>`}
                 <div class="corte-info">
                     <p class="corte-nombre">${c.nombre}</p>
                     <p class="corte-precio">$${Number(c.precio).toFixed(2)}</p>
@@ -221,13 +261,16 @@ class AdminCortesComponent extends HTMLElement {
                 </div>
             </div>
         `).join('');
+            lista.querySelectorAll('.btn-edit').forEach(btn => {
+                btn.addEventListener('click', () => this._iniciarEdicion(Number(btn.dataset.id)));
+            });
+            lista.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.addEventListener('click', () => this._confirmarEliminar(Number(btn.dataset.id)));
+            });
+        };
 
-        lista.querySelectorAll('.btn-edit').forEach(btn => {
-            btn.addEventListener('click', () => this._iniciarEdicion(Number(btn.dataset.id)));
-        });
-        lista.querySelectorAll('.btn-delete').forEach(btn => {
-            btn.addEventListener('click', () => this._confirmarEliminar(Number(btn.dataset.id)));
-        });
+        renderList(listaNorm, normales);
+        renderList(listaVip, vips);
     }
 
     _iniciarEdicion(id) {
@@ -236,6 +279,13 @@ class AdminCortesComponent extends HTMLElement {
         const sr = this.shadowRoot;
         sr.getElementById('fotoUrl').value = corte.foto_url || '';
         sr.getElementById('nombre').value = corte.nombre;
+        const tipoVal = corte.tipo || 'normal';
+        this._tipoActual = tipoVal;
+        // Sync tabs
+        sr.querySelectorAll('.tipo-tab').forEach(t => t.classList.toggle('active', t.dataset.tipo === tipoVal));
+        // Show/hide foto field
+        sr.getElementById('grupFoto').style.display = tipoVal === 'vip' ? 'none' : '';
+        sr.getElementById('labelNombre').textContent = tipoVal === 'vip' ? '👑 Nombre del paquete' : '✂️ Nombre del corte';
         sr.getElementById('precio').value = corte.precio;
         sr.getElementById('descripcion').value = corte.descripcion || '';
         sr.getElementById('formTitle').textContent = '✏️ Editando: ' + corte.nombre;
@@ -296,6 +346,7 @@ class AdminCortesComponent extends HTMLElement {
         const sr = this.shadowRoot;
         const msg = sr.getElementById('msgForm');
         const nombre = sr.getElementById('nombre').value.trim();
+        const tipo = this._tipoActual;  // Read from instance property, not DOM
         const precio = sr.getElementById('precio').value;
         const descripcion = sr.getElementById('descripcion').value.trim();
         const foto_url = sr.getElementById('fotoUrl').value.trim();
@@ -307,7 +358,7 @@ class AdminCortesComponent extends HTMLElement {
             return;
         }
 
-        const body = { nombre, precio: Number(precio), descripcion, foto_url };
+        const body = { nombre, precio: Number(precio), descripcion, foto_url, tipo };
         const isEdit = this._editandoId !== null;
         const url = isEdit ? `http://localhost:3000/api/cortes/${this._editandoId}` : 'http://localhost:3000/api/cortes';
         const method = isEdit ? 'PUT' : 'POST';
@@ -343,6 +394,19 @@ class AdminCortesComponent extends HTMLElement {
         document.addEventListener('keydown', this._onKeydown);
         sr.getElementById('btnGuardar').addEventListener('click', () => this._guardarCorte());
         sr.getElementById('btnCancelar').addEventListener('click', () => this._resetForm());
+
+        // Tabs de tipo
+        sr.querySelectorAll('.tipo-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tipo = tab.dataset.tipo;
+                this._tipoActual = tipo;  // Store in instance, not DOM
+                sr.querySelectorAll('.tipo-tab').forEach(t => t.classList.toggle('active', t === tab));
+                // Mostrar/ocultar foto
+                sr.getElementById('grupFoto').style.display = tipo === 'vip' ? 'none' : '';
+                sr.getElementById('labelNombre').textContent = tipo === 'vip' ? '👑 Nombre del paquete' : '✂️ Nombre del corte';
+                sr.getElementById('formTitle').textContent = tipo === 'vip' ? '➕ Añadir Paquete Especial' : '➕ Añadir Servicio Normal';
+            });
+        });
     }
 
     disconnectedCallback() { document.removeEventListener('keydown', this._onKeydown); }

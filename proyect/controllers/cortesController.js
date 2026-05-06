@@ -19,7 +19,7 @@ async function listarCortes(req, res) {
  * Crea un nuevo corte (solo admin).
  */
 async function crear(req, res) {
-    const { nombre, precio, descripcion, foto_url } = req.body;
+    const { nombre, precio, descripcion, foto_url, tipo } = req.body;
 
     if (!nombre?.trim() || precio == null) {
         return res.status(400).json({ ok: false, error: "Nombre y precio son obligatorios." });
@@ -34,7 +34,8 @@ async function crear(req, res) {
             nombre: nombre.trim(),
             precio: Number(precio),
             descripcion: descripcion?.trim() || '',
-            foto_url: foto_url?.trim() || ''
+            foto_url: foto_url?.trim() || '',
+            tipo: tipo?.trim() || 'normal'
         });
         res.status(201).json({ ok: true, corte });
     } catch (error) {
@@ -49,7 +50,7 @@ async function crear(req, res) {
  */
 async function editar(req, res) {
     const { id } = req.params;
-    const { nombre, precio, descripcion, foto_url } = req.body;
+    const { nombre, precio, descripcion, foto_url, tipo } = req.body;
 
     if (!nombre?.trim() || precio == null) {
         return res.status(400).json({ ok: false, error: "Nombre y precio son obligatorios." });
@@ -69,7 +70,8 @@ async function editar(req, res) {
             nombre: nombre.trim(),
             precio: Number(precio),
             descripcion: descripcion?.trim() || '',
-            foto_url: foto_url?.trim() || ''
+            foto_url: foto_url?.trim() || '',
+            tipo: tipo?.trim() || 'normal'
         });
         res.json({ ok: true, corte });
     } catch (error) {

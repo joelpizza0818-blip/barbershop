@@ -1,5 +1,5 @@
 ﻿
-
+create database barberia
 use barberia
 
 
